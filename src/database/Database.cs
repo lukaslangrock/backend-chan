@@ -6,8 +6,8 @@ using System.Data.SQLite;
 
 public static class Database
 {
-   private static readonly string DbPath = "database.db";
-   private static readonly string DbCreationPath = "createDB.sql";
+   private static readonly string DbPath = "resources/database.db";
+   private static readonly string DbCreationPath = "resources/createDB.sql";
    private static SQLiteConnection Connection;
    
    static Database()
