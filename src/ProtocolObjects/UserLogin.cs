@@ -1,13 +1,17 @@
-﻿namespace backend.ProtocolObjects;
+﻿using Newtonsoft.Json.Linq;
 
-public class UserLogin
+namespace backend.ProtocolObjects;
+
+public class UserLogin(bool success, int clientId)
 {
-    private readonly bool _success = false;
-    private readonly int _clientId;
+    public readonly bool Success = success;
+    public readonly int ClientId = clientId;
 
-    public UserLogin(bool success, int clientId)
+    public static UserLogin FromJson(string json)
     {
-        _success = success;
-        _clientId = clientId;
+        var obj = JObject.Parse(json);
+        return new UserLogin(
+            obj["success"]!.Value<bool>(),
+            obj["clientId"]!.Value<int>());
     }
 }

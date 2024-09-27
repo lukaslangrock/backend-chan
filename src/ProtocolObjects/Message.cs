@@ -1,8 +1,20 @@
-﻿namespace backend.ProtocolObjects;
+﻿using System.Text.Json;
+using Newtonsoft.Json.Linq;
 
-public class Message(int userId, int roomId, string name)
+namespace backend.ProtocolObjects;
+
+public class Message(int userId, int roomId, string text)
 {
-    private readonly int _userId = userId;
-    private readonly int _roomId = roomId;
-    private readonly string _name = name;
+    public readonly int UserId = userId;
+    public readonly int RoomId = roomId;
+    public readonly string Text = text;
+
+    public static Message FromJson(string json)
+    {
+        var obj = JObject.Parse(json);
+        return new Message(
+            obj["userId"].Value<int>(), 
+            obj["roomId"].Value<int>(),
+            obj["text"].Value<String>());
+    }
 }

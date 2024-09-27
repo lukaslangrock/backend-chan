@@ -1,6 +1,15 @@
-﻿namespace backend.ProtocolObjects;
+﻿using Newtonsoft.Json.Linq;
+
+namespace backend.ProtocolObjects;
 
 public class MessageSendResponse (bool success)
 {
-    private readonly bool _success = success;
+    public readonly bool Success = success;
+
+    public MessageSendResponse FromJson(string json)
+    {
+        var obj = JObject.Parse(json);
+        return new MessageSendResponse(
+            obj["success"].Value<bool>());
+    }
 }

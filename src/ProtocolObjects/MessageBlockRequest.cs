@@ -1,8 +1,19 @@
-﻿namespace backend.ProtocolObjects;
+﻿using Newtonsoft.Json.Linq;
+
+namespace backend.ProtocolObjects;
 
 public class MessageBlockRequest (int roomId, long startTs, long endTs)
 {
-    private readonly int _roomId = roomId;
-    private readonly long _startTs = startTs;
-    private readonly long _endTs = endTs; 
+    public readonly int RoomId = roomId;
+    public readonly long StartTs = startTs;
+    public readonly long EndTs = endTs;
+
+    public static MessageBlockRequest FromJson(string json)
+    {
+        var obj = JObject.Parse(json);
+        return new MessageBlockRequest(
+            obj["roomId"].Value<int>(),
+            obj["startTs"].Value<long>(),
+            obj["endTs"].Value<long>());
+    }
 }

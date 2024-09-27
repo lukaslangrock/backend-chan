@@ -1,7 +1,18 @@
-﻿namespace backend.ProtocolObjects;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+
+namespace backend.ProtocolObjects;
 
 public class UserLoginRequest(string username, string password)
 {
-    private readonly string _username = username;
-    private readonly string _password = password;
+    public readonly string Username = username;
+    public readonly string Password = password;
+
+    public static UserLoginRequest FromJson(string json)
+    {
+        var obj = JObject.Parse(json);
+        return new UserLoginRequest(
+            obj["username"]!.Value<string>()!,
+            obj["password"]!.Value<string>()!);
+    }
 }
