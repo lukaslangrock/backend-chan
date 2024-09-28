@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json.Linq;
+using Newtonsoft.Json.Linq;
 
 namespace backend.ProtocolObjects;
 
@@ -13,9 +13,9 @@ public class MessageSendRequest(int clientId, int userId, int roomId, string tex
     {
         var obj = JObject.Parse(json);
         return new MessageSendRequest(
-            obj["clientId"].Value<int>(),
-            obj["userId"].Value<int>(),
-            obj["roomId"].Value<int>(),
-            obj["text"].Value<string>());
+            obj["ClientId"].Value<int>(),
+            obj["UserId"].Value<int>(),
+            obj["RoomId"].Value<int>(),
+            obj["Text"].Value<string>());
     }
 }
