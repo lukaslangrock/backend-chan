@@ -93,9 +93,8 @@ public static class DB
 
    public static bool AddUser(User user)
    {
-      return ExecuteNonQuery("INSERT INTO user (id, username, password, displayname, onlinestatus) VALUES ("
-                             + user.Id + ", " + user.Username + ", " + user.Password + ", " + user.DisplayName + ", " +
-                             user.OnlineStatus + ");") > 1;
+      return ExecuteNonQuery("INSERT INTO user (id, username, password, displayname, onlinestatus) VALUES ('" + user.Id + "', '" + user.Username + "', '" + user.Password + "', '" + user.DisplayName + "', '" +
+                             user.OnlineStatus + "');") > 1;
    }
 
    public static bool AddMessage(Message message)
