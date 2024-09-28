@@ -93,7 +93,7 @@ public static class DB
 
    public static bool AddUser(User user)
    {
-      return ExecuteNonQuery("INSERT INTO user (id, username, password, displayname, onlinestatus) VALUES ('" + user.Id + "', '" + user.Username + "', '" + user.Password + "', '" + user.DisplayName + "', '" +
+      return ExecuteNonQuery("INSERT INTO User (id, username, password, displayname, onlinestatus) VALUES ('" + user.Id + "', '" + user.Username + "', '" + user.Password + "', '" + user.DisplayName + "', '" +
                              user.OnlineStatus + "');") > 1;
    }
 
@@ -108,12 +108,14 @@ public static class DB
       User? user = null;
       ExecuteQuery("SELECT * FROM User WHERE username='" + username + "';", reader =>
       {
-         Console.WriteLine(reader.ToString());
-         user = new User(reader.GetInt32(0),
-            reader.GetString(1),
-            reader.GetString(2),
-            reader.GetString(3),
-            reader.GetInt32(4) == 1 ? OnlineStatus.Online : OnlineStatus.Offline);
+         int id = reader.GetInt32(0);
+         string username = reader.GetString(1);
+         string password = reader.GetString(2);
+         string displayName = reader.GetString(3);
+         string onlineStatusStr = reader.GetString(4);
+         OnlineStatus onlineStatus = onlineStatusStr == "Online" ? OnlineStatus.Online : OnlineStatus.Offline;
+         
+         user = new User(id, username, password, displayName, onlineStatus);
       });
       
       return user;

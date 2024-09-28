@@ -12,7 +12,7 @@ public class UserLoginRequest(string username, string password) : Serializer
     {
         var obj = JObject.Parse(json);
         return new UserLoginRequest(
-            obj["username"]!.Value<string>()!,
-            obj["password"]!.Value<string>()!);
+            obj["Username"]!.Value<string>()!,
+            obj["Password"]!.Value<string>()!);
     }
 }
