@@ -22,6 +22,7 @@ public static class ProtocolHandler
     
     public static string? OnReceive(string json, int clientId)
     {
+        Console.WriteLine("[PH] Received json \"" + json + "\"" + " from client " + clientId);
         try
         {
             var jObject = JObject.Parse(json);
@@ -31,6 +32,7 @@ public static class ProtocolHandler
                 if (jObject.ContainsKey(entry.Key))
                 {
                     Serializer obj = entry.Value(jObject[entry.Key].Value<String>());
+                    Console.WriteLine("Handling object type " + obj.GetType().Name);
                     return Handle(obj, clientId);
                 }
             }
@@ -53,11 +55,13 @@ public static class ProtocolHandler
                 
                 if (valid)
                 {
+                    Console.Write("[PH] Valid credentials");
                     clientUserMapping.Add(clientId, DB.GetUserByUsername(ulr.Username).Id);
                     return JsonConvert.SerializeObject(new UserLogin(true, clientId ));
                 }
                 else
                 {
+                    Console.WriteLine("[PH] Invalid credentials");
                     return JsonConvert.SerializeObject(new UserLogin(false, -1));
                 }
             } break;
