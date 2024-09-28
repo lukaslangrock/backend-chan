@@ -97,6 +97,21 @@ public static class DB
                       + message.Id + ", " + message.RoomId + ", " + message.SenderId + ", " + message.Text) > 0;
    }
 
+   public static User GetUserByUsername(string username)
+   {
+      User? user = null;
+      ExecuteQuery("SELECT * FROM user WHERE username=" + username, reader =>
+      {
+         user = new User(reader.GetInt32(0),
+            reader.GetString(1),
+            reader.GetString(2),
+            reader.GetString(3),
+            reader.GetInt32(4) == 1 ? OnlineStatus.Online : OnlineStatus.Offline);
+      });
+      
+      return user;
+   }
+
    public static int GetFreeMessageId()
    {
       int id;
