@@ -27,8 +27,7 @@ public static class ProtocolHandler
         {
             var jObject = JObject.Parse(json);
             
-            Console.WriteLine("[PH] Deserialized json object: " + jObject.ToString());
-
+            Console.WriteLine("[ProtocolHandler] Deserialized json object...");
             foreach (var entry in ProtocolTypeMapping)
             {
                 if (jObject.ContainsKey(entry.Key))
@@ -53,7 +52,6 @@ public static class ProtocolHandler
         {
             case "RegisterUserRequest":
             {
-                Console.WriteLine("The PC is PC-ing properly.");
                 RegisterUserRequest rur = (RegisterUserRequest)obj;
 
                 if (DB.GetUserByUsername(rur.Username) == null)
@@ -72,7 +70,7 @@ public static class ProtocolHandler
                 
                 if (valid)
                 {
-                    Console.Write("[PH] Valid credentials");
+                    Console.Write("[ProtocolHandler] Valid credentials");
                     User? user = DB.GetUserByUsername(ulr.Username);
                     if(user == null)
                         Console.WriteLine("User logged in with valid credentials, but is not found in database.");
@@ -81,7 +79,7 @@ public static class ProtocolHandler
                 }
                 else
                 {
-                    Console.WriteLine("[PH] Invalid credentials");
+                    Console.WriteLine("[ProtocolHandler] Invalid credentials");
                     return JsonConvert.SerializeObject(new UserLogin(false, -1));
                 }
             } break;
