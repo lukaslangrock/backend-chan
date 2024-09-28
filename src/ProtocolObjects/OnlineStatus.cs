@@ -1,4 +1,4 @@
-namespace backend.database;
+﻿namespace backend.ProtocolObjects;
 
 public enum OnlineStatus
 {

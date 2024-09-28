@@ -66,7 +66,7 @@ public static class ProtocolHandler
                 UserDescriptionRequest udr = (UserDescriptionRequest)obj;
                 User? user = DB.GetUserById(udr.UserId);
                 
-                return JsonConvert.SerializeObject(new UserDescription(user.Id, user.DisplayName, user.OnlineStatus == OnlineStatus.Online ? UserOnlineStatus.Online : UserOnlineStatus.Offline));
+                return JsonConvert.SerializeObject(new UserDescription(user.Id, user.DisplayName, user.OnlineStatus == OnlineStatus.Online ? OnlineStatus.Online : OnlineStatus.Offline));
             } break;
             case "ServerRoomLayoutRequest":
             {
@@ -81,7 +81,7 @@ public static class ProtocolHandler
                     
                     foreach(User member in members)
                     {
-                        memberDescriptions.Add(new UserDescription(member.Id, member.DisplayName, member.OnlineStatus == OnlineStatus.Online ? UserOnlineStatus.Online : UserOnlineStatus.Offline));
+                        memberDescriptions.Add(new UserDescription(member.Id, member.DisplayName, member.OnlineStatus == OnlineStatus.Online ? OnlineStatus.Online : OnlineStatus.Offline));
                     }
                     
                     roomDescriptions.Add(new RoomDescription(room.DisplayName, room.Id, new MemberList(memberDescriptions.ToArray())));
@@ -92,7 +92,18 @@ public static class ProtocolHandler
             case "RoomDescriptionRequest":
             {
                 RoomDescriptionRequest rdr = (RoomDescriptionRequest)obj;
-                return JsonConvert.SerializeObject(DB.GetRoomById(rdr.RoomId));
+                var roomRequest = DB.GetRoomById(rdr.RoomId);
+                User[] members = DB.GetRoomMembers(rdr.RoomId);
+                UserDescription[] memberDescriptions = new UserDescription[members.Length];
+                
+                int index = 0;
+                foreach (var member in members)
+                {
+                        memberDescriptions[index++] = new UserDescription(member.Id, member.DisplayName, member.OnlineStatus);
+                }
+                
+                RoomDescription responseMemberDescriptions = new RoomDescription(roomRequest.DisplayName, roomRequest.Id, new MemberList(memberDescriptions));
+                return JsonConvert.SerializeObject(responseMemberDescriptions);
             } break;
             case "MessageBlockRequest":
             {

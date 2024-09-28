@@ -1,3 +1,5 @@
+using backend.ProtocolObjects;
+
 namespace backend.database;
 
 public class User(int id, string username, string password, string displayName, OnlineStatus onlineStatus)
