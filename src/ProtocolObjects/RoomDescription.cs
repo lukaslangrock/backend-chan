@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class RoomDescription(string displayName, int id, MemberList memberList)
+public class RoomDescription(string displayName, int id, MemberList memberList) : ObjectSerialization
 {
     public readonly string DisplayName = displayName;
     public readonly int Id = id;
