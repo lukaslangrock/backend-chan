@@ -22,7 +22,7 @@ app.Map("/ws", async context =>
     if (context.WebSockets.IsWebSocketRequest)
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-        connections.Add(ws, DateTimeOffset.UtcNow.ToUnixTimeSeconds().GetHashCode()); // very secure, very mindful
+        connections.Add(ws, (int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); // very secure, very mindful
         Console.WriteLine("[WebSocket] Accepted new WebSocket connection, identifying client as " + connections[ws]);
 
         await ReceiveMessage(ws,
