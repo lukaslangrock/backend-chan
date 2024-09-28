@@ -121,16 +121,33 @@ public static class DB
       return user;
    }
 
+   public static Message? GetMessageById(int id)
+   {
+      Message? message = null;
+      
+      ExecuteQuery("SELECT * FROM Message WHERE id='" + id + "'", reader =>
+      {
+         message = new Message(
+            reader.GetInt32(0), 
+            reader.GetInt32(1), 
+            reader.GetInt32(2),
+            reader.GetInt32(3),
+            reader.GetString(4));
+      });
+
+      return message;
+   }
+
    public static int GetFreeMessageId()
    {
-      int id = -1;
-      ExecuteQuery(
-         "SELECT MIN(t1.id) + 1 AS first_unused_id FROM Message AS t1 LEFT JOIN Message AS t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL LIMIT 1;",
-         reader =>
-         {
-            id = reader.GetInt32(0);
-         });
-      return id;
+      int id = 0;
+      while (true)
+      {
+         Message? message = GetMessageById(id++);
+
+         if (message == null)
+            return id;
+      }
    }
 
    public static int GetFreeUserId()
