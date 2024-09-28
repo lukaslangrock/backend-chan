@@ -91,13 +91,20 @@ public static class DB
       return rooms.ToArray();
    }
 
+   public static bool AddUser(User user)
+   {
+      return ExecuteNonQuery("INSERT INTO user (id, username, password, displayname, onlinestatus) VALUES ("
+                             + user.Id + ", " + user.Username + ", " + user.Password + ", " + user.DisplayName + ", " +
+                             user.OnlineStatus + ");") > 1;
+   }
+
    public static bool AddMessage(Message message)
    {
       return ExecuteNonQuery("INSERT INTO message (id, timestamp, roomid, senderid, text) VALUES ('"
-                      + message.Id + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "'") > 0;
+                      + message.Id + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "');") > 0;
    }
 
-   public static User GetUserByUsername(string username)
+   public static User? GetUserByUsername(string username)
    {
       User? user = null;
       ExecuteQuery("SELECT * FROM user WHERE username='" + username + "';", reader =>
@@ -114,14 +121,25 @@ public static class DB
 
    public static int GetFreeMessageId()
    {
-      int id;
-      return ExecuteQuery(
+      int id = -1;
+      ExecuteQuery(
          "SELECT MIN(t1.id) + 1 AS first_unused_id FROM Message AS t1 LEFT JOIN Message AS t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL LIMIT 1;",
          reader =>
          {
             id = reader.GetInt32(0);
          });
+      return id;
+   }
 
+   public static int GetFreeUserId()
+   {
+      int id = -1;
+      ExecuteQuery(
+         "SELECT MIN(t1.id) + 1 AS first_unused_id FROM User AS t1 LEFT JOIN User AS t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL LIMIT 1;",
+         reader =>
+         {
+            id = reader.GetInt32(0);
+         });
       return id;
    }
 

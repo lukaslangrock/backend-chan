@@ -16,6 +16,7 @@ public static class ProtocolHandler
         { "RoomDescriptionRequest", json => RoomDescriptionRequest.FromJson(json) },
         { "MessageBlockRequest", json => MessageBlockRequest.FromJson(json)},
         { "MessageSendRequest", json => MessageSendRequest.FromJson(json) },
+        { "RegisterUserRequest", json => RegisterUserRequest.FromJson(json)},
     };
 
     private static readonly Dictionary<int, int> clientUserMapping = new Dictionary<int, int>();
@@ -51,6 +52,19 @@ public static class ProtocolHandler
     {
         switch (obj.GetType().Name)
         {
+            case "UserRegisterRequest":
+            {
+                RegisterUserRequest rur = (RegisterUserRequest)obj;
+
+                if (DB.GetUserByUsername(rur.Username) == null)
+                {
+                    DB.AddUser(new User(DB.GetFreeUserId(), rur.Username, rur.Password, rur.DisplayName, OnlineStatus.Offline));
+                    
+                    return JsonConvert.SerializeObject(new RegisterUserResponse(true));
+                }
+
+                return JsonConvert.SerializeObject(new RegisterUserResponse(false));
+            }
             case "UserLoginRequest":
             {
                 UserLoginRequest ulr = (UserLoginRequest)obj;
