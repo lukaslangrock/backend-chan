@@ -73,7 +73,10 @@ public static class ProtocolHandler
                 if (valid)
                 {
                     Console.Write("[PH] Valid credentials");
-                    clientUserMapping.Add(clientId, DB.GetUserByUsername(ulr.Username).Id);
+                    User? user = DB.GetUserByUsername(ulr.Username);
+                    if(user == null)
+                        Console.WriteLine("User logged in with valid credentials, but is not found in database.");
+                    clientUserMapping.Add(clientId, user.Id);
                     return JsonConvert.SerializeObject(new UserLogin(true, clientId ));
                 }
                 else
