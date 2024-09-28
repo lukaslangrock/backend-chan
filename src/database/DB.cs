@@ -34,13 +34,13 @@ public static class DB
 
    public static bool CheckUserCredentials(string username, string password)
    {
-      return ExecuteQuery("SELECT * FROM user WHERE username=" + username + " AND password=" + password, reader => {}) > 0;
+      return ExecuteQuery("SELECT * FROM user WHERE username='" + username + "' AND password='" + password + "'", reader => {}) > 0;
    }
 
    public static User? GetUserById(int id)
    {
       User? user = null;
-      ExecuteQuery("SELECT * FROM user WHERE id=" + id, reader =>
+      ExecuteQuery("SELECT * FROM user WHERE id='" + id + "'", reader =>
       {
          user = new User(reader.GetInt32(0),
             reader.GetString(1),
@@ -55,7 +55,7 @@ public static class DB
    public static Room? GetRoomById(int id)
    {
       Room? room = null;
-      ExecuteQuery("SELECT * FROM room WHERE id=" + id, reader =>
+      ExecuteQuery("SELECT * FROM room WHERE id='" + id + "'", reader =>
       {
          room = new Room(reader.GetInt32(0), reader.GetString(1));
       });
@@ -67,8 +67,8 @@ public static class DB
    {
       List<Message> messages = new List<Message>();
       ExecuteQuery(
-         "SELECT * FROM message WHERE roomid=" + roomId + " AND timestamp>=" + startTimestamp + " AND timestamp<=" +
-         endTimestamp,
+         "SELECT * FROM message WHERE roomid='" + roomId + "' AND timestamp>='" + startTimestamp + "' AND timestamp<='" +
+         endTimestamp + "'",
          reader =>
          {
             messages.Add(new Message(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3),
@@ -93,14 +93,14 @@ public static class DB
 
    public static bool AddMessage(Message message)
    {
-      return ExecuteNonQuery("INSERT INTO message (id, timestamp, roomid, senderid, text) VALUES ("
-                      + message.Id + ", " + message.RoomId + ", " + message.SenderId + ", " + message.Text) > 0;
+      return ExecuteNonQuery("INSERT INTO message (id, timestamp, roomid, senderid, text) VALUES ('"
+                      + message.Id + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "'") > 0;
    }
 
    public static User GetUserByUsername(string username)
    {
       User? user = null;
-      ExecuteQuery("SELECT * FROM user WHERE username=" + username + ";", reader =>
+      ExecuteQuery("SELECT * FROM user WHERE username='" + username + "';", reader =>
       {
          user = new User(reader.GetInt32(0),
             reader.GetString(1),
