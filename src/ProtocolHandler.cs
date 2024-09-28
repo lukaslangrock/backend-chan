@@ -26,6 +26,8 @@ public static class ProtocolHandler
         try
         {
             var jObject = JObject.Parse(json);
+            
+            Console.WriteLine("[PH] Deserialized json object: " + jObject.ToString());
 
             foreach (var entry in ProtocolTypeMapping)
             {
