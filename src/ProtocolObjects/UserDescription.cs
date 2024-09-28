@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace backend;
 
-public class UserDescription(int id, string displayName, UserOnlineStatus onlineStatus)
+public class UserDescription(int id, string displayName, UserOnlineStatus onlineStatus) : ObjectSerialization
 {
     public readonly int Id = id;
     public readonly string DisplayName = displayName;

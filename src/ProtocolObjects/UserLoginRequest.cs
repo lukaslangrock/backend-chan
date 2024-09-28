@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace backend.ProtocolObjects;
 
-public class UserLoginRequest(string username, string password)
+public class UserLoginRequest(string username, string password) : ObjectSerialization
 {
     public readonly string Username = username;
     public readonly string Password = password;
