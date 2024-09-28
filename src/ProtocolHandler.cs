@@ -81,7 +81,7 @@ public static class ProtocolHandler
                     
                     foreach(User member in members)
                     {
-                        memberDescriptions.Add(new UserDescription(member.Id, member.DisplayName, member.OnlineStatus == OnlineStatus.Online ? OnlineStatus.Online : OnlineStatus.Offline));
+                        memberDescriptions.Add(new UserDescription(member.Id, member.DisplayName, member.OnlineStatus));
                     }
                     
                     roomDescriptions.Add(new RoomDescription(room.DisplayName, room.Id, new MemberList(memberDescriptions.ToArray())));
