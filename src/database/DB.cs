@@ -100,7 +100,7 @@ public static class DB
    public static User GetUserByUsername(string username)
    {
       User? user = null;
-      ExecuteQuery("SELECT * FROM user WHERE username=" + username, reader =>
+      ExecuteQuery("SELECT * FROM user WHERE username=" + username + ";", reader =>
       {
          user = new User(reader.GetInt32(0),
             reader.GetString(1),
