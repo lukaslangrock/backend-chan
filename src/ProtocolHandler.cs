@@ -26,13 +26,11 @@ public static class ProtocolHandler
         {
             var jObject = JObject.Parse(json);
 
-            if (jObject.ContainsKey() // Check if the json object has a "Type" field
+            foreach (var entry in ProtocolTypeMapping)
             {
-                var typeName = jObject["Type"]?.ToString();
-
-                if (typeName != null && ProtocolTypeMapping.TryGetValue(typeName, out var objectCreator))
+                if (jObject.ContainsKey(entry.Key))
                 {
-                    Serializer obj = objectCreator(json);
+                    Serializer obj = entry.Value(jObject[entry.Key].Value<String>());
                     return Handle(obj, clientId);
                 }
             }
@@ -66,13 +64,30 @@ public static class ProtocolHandler
             case "UserDescriptionRequest":
             {
                 UserDescriptionRequest udr = (UserDescriptionRequest)obj;
-                return JsonConvert.SerializeObject(new UserDescription(DB.GetUserById(udr.UserId), )); //Missing Implementation from DB
+                User? user = DB.GetUserById(udr.UserId);
+                
+                return JsonConvert.SerializeObject(new UserDescription(user.Id, user.DisplayName, user.OnlineStatus == OnlineStatus.Online ? UserOnlineStatus.Online : UserOnlineStatus.Offline));
             } break;
             case "ServerRoomLayoutRequest":
             {
                 ServerRoomLayoutRequest srlr = (ServerRoomLayoutRequest)obj;
+                Room[] rooms = DB.GetRooms();
+                List<RoomDescription> roomDescriptions = new List<RoomDescription>();
                 
-                return JsonConvert.SerializeObject(srlr); // //Missing Implementation from DB
+                foreach (Room room in rooms)
+                {
+                    User[] members = DB.GetRoomMembers(room.Id);
+                    List<UserDescription> memberDescriptions = new List<UserDescription>();
+                    
+                    foreach(User member in members)
+                    {
+                        memberDescriptions.Add(new UserDescription(member.Id, member.DisplayName, member.OnlineStatus == OnlineStatus.Online ? UserOnlineStatus.Online : UserOnlineStatus.Offline));
+                    }
+                    
+                    roomDescriptions.Add(new RoomDescription(room.DisplayName, room.Id, new MemberList(memberDescriptions.ToArray())));
+                }
+                
+                return JsonConvert.SerializeObject(new ServerRoomLayout(roomDescriptions.ToArray()));
             } break;
             case "RoomDescriptionRequest":
             {
