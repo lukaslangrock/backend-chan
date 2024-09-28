@@ -1,4 +1,4 @@
-﻿namespace backend;
+﻿namespace backend.ProtocolObjects;
 
 public class RoomDescription
 {

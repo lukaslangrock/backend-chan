@@ -1,23 +1,7 @@
-﻿namespace backend;
+﻿namespace backend.ProtocolObjects;
 
-public class UserLoginRequest
+public class UserLoginRequest(string username, string password)
 {
-    private readonly string _username;
-    private readonly string _password;
-
-    public string Username
-    {
-        get => _username;
-    }
-
-    public string Password
-    {
-        get => _password;
-    }
-
-    public UserLoginRequest(string username, string password)
-    {
-        _username = username;
-        _password = password;
-    }
+    private readonly string _username = username;
+    private readonly string _password = password;
 }

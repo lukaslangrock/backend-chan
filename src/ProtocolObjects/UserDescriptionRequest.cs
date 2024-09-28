@@ -1,16 +1,6 @@
-﻿namespace backend;
+﻿namespace backend.ProtocolObjects;
 
-public class UserDescriptionRequest
+public class UserDescriptionRequest(int userId)
 {
-    private readonly int _userId;
-
-    public int UserId
-    {
-        get => _userId;
-    }
-
-    public UserDescriptionRequest(int userId)
-    {
-        _userId = userId;
-    }
+    private readonly int _userId = userId;
 }
