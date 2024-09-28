@@ -13,8 +13,8 @@ public class UserDescription(int id, string displayName, UserOnlineStatus online
     {
         var obj = JObject.Parse(json);
         return new UserDescription(
-            obj["id"].Value<int>(), 
-            obj["displayName"].Value<string>(),
-            obj["onlineStatus"].Value<int>() == 1 ? UserOnlineStatus.Online : UserOnlineStatus.Offline);
+            obj["Id"].Value<int>(), 
+            obj["DisplayName"].Value<string>(),
+            obj["OnlineStatus"].Value<int>() == 1 ? UserOnlineStatus.Online : UserOnlineStatus.Offline);
     }
 }

@@ -10,6 +10,6 @@ public class MessageSendResponse (bool success) : Serializer
     {
         var obj = JObject.Parse(json);
         return new MessageSendResponse(
-            obj["success"].Value<bool>());
+            obj["Success"].Value<bool>());
     }
 }

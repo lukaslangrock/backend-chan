@@ -12,8 +12,8 @@ public class RoomDescription(string displayName, int id, MemberList memberList) 
     {
         var obj = JObject.Parse(json);
         return new RoomDescription(
-            obj["displayName"].Value<string>(),
-            obj["id"].Value<int>(),
-            ProtocolObjects.MemberList.FromJson(obj["memberList"].ToString()));
+            obj["DisplayName"].Value<string>(),
+            obj["Id"].Value<int>(),
+            ProtocolObjects.MemberList.FromJson(obj["MemberList"].ToString()));
     }
 }

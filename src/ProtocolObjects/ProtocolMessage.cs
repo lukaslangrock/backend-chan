@@ -15,10 +15,10 @@ public class ProtocolMessage(int id, int timestamp, int roomId, int senderId, st
     {
         var obj = JObject.Parse(json);
         return new ProtocolMessage(
-            obj["id"].Value<int>(), 
-            obj["timestamp"].Value<int>(),
-            obj["roomId"].Value<int>(),
-            obj["senderId"].Value<int>(),
-            obj["text"].Value<String>());
+            obj["Id"].Value<int>(), 
+            obj["Timestamp"].Value<int>(),
+            obj["RoomId"].Value<int>(),
+            obj["SenderId"].Value<int>(),
+            obj["Text"].Value<String>());
     }
 }

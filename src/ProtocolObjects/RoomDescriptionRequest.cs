@@ -9,6 +9,6 @@ public class RoomDescriptionRequest (int roomId) : Serializer
     public static RoomDescriptionRequest FromJson(string json)
     {
         var obj = JObject.Parse(json);
-        return new RoomDescriptionRequest(obj["id"].Value<int>());
+        return new RoomDescriptionRequest(obj["RoomId"].Value<int>());
     }
 }
