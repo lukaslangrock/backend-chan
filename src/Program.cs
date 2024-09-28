@@ -12,6 +12,7 @@ DB.CreateDB();
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 var connections = new Dictionary<WebSocket, int>();
+Random random = new Random();
 
 app.MapGet("/", () => "Connichiwa, backuendo-chan heru. Pleasu connectu on webu sokketsu to interufacu.");
 
@@ -22,7 +23,7 @@ app.Map("/ws", async context =>
     if (context.WebSockets.IsWebSocketRequest)
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-        connections.Add(ws, (int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); // very secure, very mindful
+        connections.Add(ws, Convert.ToInt32(random.NextInt64().ToString().Substring(0, 8))); // very secure, very mindful
         Console.WriteLine("[WebSocket] Accepted new WebSocket connection, identifying client as " + connections[ws]);
 
         await ReceiveMessage(ws,
