@@ -33,7 +33,8 @@ public static class ProtocolHandler
             {
                 if (jObject.ContainsKey(entry.Key))
                 {
-                    Serializer obj = entry.Value(jObject[entry.Key].Value<String>());
+                    Console.WriteLine(entry.Key + ", " + jObject[entry.Key]);
+                    Serializer obj = entry.Value(jObject[entry.Key].ToString());
                     Console.WriteLine("Handling object type " + obj.GetType().Name);
                     return Handle(obj, clientId);
                 }
