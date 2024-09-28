@@ -3,7 +3,6 @@ using backend.database;
 using backend.ProtocolObjects;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using Message = backend.database.Message;
 
 namespace backend;
 
@@ -83,7 +82,16 @@ public static class ProtocolHandler
             case "MessageBlockRequest":
             {
                 MessageBlockRequest mbr = (MessageBlockRequest)obj;
-                return JsonConvert.SerializeObject(DB.GetMessages(mbr.RoomId, mbr.StartTs, mbr.EndTs));
+                Message[] dbMessageBlock = DB.GetMessages(mbr.RoomId, mbr.StartTs, mbr.EndTs);
+                ProtocolMessage[] messageBlock = new ProtocolMessage[dbMessageBlock.Length];
+                
+                int index = 0;
+                foreach (var message in dbMessageBlock)
+                {
+                    messageBlock[index++] = new ProtocolMessage(message.Id, message.Timestamp, message.Id, message.SenderId, message.Text);
+                }
+
+                return JsonConvert.SerializeObject(new MessageBlock(messageBlock));
             } break;
             case "MessageSendRequest":
             {
@@ -93,11 +101,11 @@ public static class ProtocolHandler
                 {
                     int currentMilliseconds = Environment.TickCount;
                     DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, msr.UserId, msr.Text));
-                    return JsonConvert.SerializeObject(new MessageSendResponse(true)); // Missing Implementation from DB
+                    return JsonConvert.SerializeObject(new MessageSendResponse(true));
 
                 }
 
-                return JsonConvert.SerializeObject(new MessageSendResponse(false)); // Missing Implementation from DB
+                return JsonConvert.SerializeObject(new MessageSendResponse(false)); 
             } break;
             default:
             {
