@@ -18,12 +18,12 @@ app.MapGet("/", () => "Connichiwa, backuendo-chan heru. Pleasu connectu on webu 
 app.UseWebSockets();
 app.Map("/ws", async context =>
 {
-    Console.WriteLine("[WS] Trying to handle data incoming to endpoint '/ws'");
+    Console.WriteLine("[WebSocket] Trying to handle data incoming to endpoint '/ws'");
     if (context.WebSockets.IsWebSocketRequest)
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
         connections.Add(ws, DateTimeOffset.UtcNow.ToUnixTimeSeconds().GetHashCode()); // very secure, very mindful
-        Console.WriteLine("[WebSocket] Accepted new WebSocket connection. ");
+        Console.WriteLine("[WebSocket] Accepted new WebSocket connection, identifying client as " + connections[ws]);
 
         await ReceiveMessage(ws,
             async (result, buffer) =>
@@ -41,14 +41,14 @@ app.Map("/ws", async context =>
                     else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
                     {
                         // websocket connection of client was lost
-                        Console.WriteLine("[WebSocket] Lost clientidentified as " + connections[ws]);
+                        Console.WriteLine("[WebSocket] Lost client identified as " + connections[ws]);
                         connections.Remove(ws);
                     }
                 });
     }
     else
     {
-        Console.WriteLine("[WebSocket] Endpoint '/ws' has received a non-WebSocket request, responding with 418 go fuck yourself.");
+        Console.WriteLine("[WebSocket] Received a non-WebSocket request, responding with 418 go fuck yourself.");
         context.Response.StatusCode = 418;
     }
 });
@@ -72,5 +72,4 @@ async static Task SendMessage(WebSocket ws, string message)
     }
 }
 
-Console.WriteLine("[WebHandler] Running server...");
 await app.RunAsync();
