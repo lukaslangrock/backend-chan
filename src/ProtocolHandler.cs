@@ -156,30 +156,23 @@ public static class ProtocolHandler
             {
                 MessageSendRequest msr = (MessageSendRequest)obj;
 
-                if (clientUserMapping[msr.ClientId] == msr.UserId)
+                int currentMilliseconds = Environment.TickCount;
+                DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, clientUserMapping[clientId], msr.Text));
+                
+                List<(string?, bool)> o8 = new List<(string?, bool)>();
+                o8.Add((JsonConvert.SerializeObject(new MessageSendResponse(true)), false));
+
+                Message[] messages = DB.GetMessages(msr.RoomId, currentMilliseconds - 10000,
+                    currentMilliseconds + 10000);
+                List<ProtocolMessage> protMessages = new List<ProtocolMessage>();
+
+                foreach (var message in messages)
                 {
-                    int currentMilliseconds = Environment.TickCount;
-                    DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, msr.UserId, msr.Text));
-                    
-                    List<(string?, bool)> o8 = new List<(string?, bool)>();
-                    o8.Add((JsonConvert.SerializeObject(new MessageSendResponse(true)), false));
-
-                    Message[] messages = DB.GetMessages(msr.RoomId, currentMilliseconds - 10000,
-                        currentMilliseconds + 10000);
-                    List<ProtocolMessage> protMessages = new List<ProtocolMessage>();
-
-                    foreach (var message in messages)
-                    {
-                        protMessages.Add(new ProtocolMessage(message.Id, message.Timestamp, message.RoomId, message.SenderId, message.Text));
-                    }
-                    
-                    o8.Add((JsonConvert.SerializeObject(new MessageBlock(protMessages.ToArray())), false));
-                    return o8;
+                    protMessages.Add(new ProtocolMessage(message.Id, message.Timestamp, message.RoomId, message.SenderId, message.Text));
                 }
-
-                List<(string?, bool)> o9 = new List<(string?, bool)>();
-                o9.Add((JsonConvert.SerializeObject(new MessageSendResponse(false)), false));
-                return o9;
+                
+                o8.Add((JsonConvert.SerializeObject(new MessageBlock(protMessages.ToArray())), false));
+                return o8;
             } break;
             default:
             {
