@@ -133,14 +133,14 @@ public static class DB
 
    public static int GetFreeUserId()
    {
-      int id = -1;
-      ExecuteQuery(
-         "SELECT MIN(t1.id) + 1 AS first_unused_id FROM User AS t1 LEFT JOIN User AS t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL LIMIT 1;",
-         reader =>
-         {
-            id = reader.GetInt32(0);
-         });
-      return id;
+      int id = 0;
+      while (true)
+      {
+         User? user = GetUserById(id++);
+
+         if (user != null)
+            return id;
+      }
    }
 
    public static OnlineStatus? GetOnlineStatus(int userId)
