@@ -108,6 +108,7 @@ public static class DB
       User? user = null;
       ExecuteQuery("SELECT * FROM User WHERE username='" + username + "';", reader =>
       {
+         Console.WriteLine(reader.ToString());
          user = new User(reader.GetInt32(0),
             reader.GetString(1),
             reader.GetString(2),
