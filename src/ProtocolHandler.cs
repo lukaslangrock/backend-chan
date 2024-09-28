@@ -23,7 +23,6 @@ public static class ProtocolHandler
     
     public static string? OnReceive(string json, int clientId)
     {
-        Console.WriteLine("[PH] Received json \"" + json + "\"" + " from client " + clientId);
         try
         {
             var jObject = JObject.Parse(json);
@@ -52,7 +51,7 @@ public static class ProtocolHandler
     {
         switch (obj.GetType().Name)
         {
-            case "UserRegisterRequest":
+            case "RegisterUserRequest":
             {
                 RegisterUserRequest rur = (RegisterUserRequest)obj;
 
