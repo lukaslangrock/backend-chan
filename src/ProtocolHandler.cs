@@ -53,6 +53,7 @@ public static class ProtocolHandler
         {
             case "RegisterUserRequest":
             {
+                Console.WriteLine("The PC is PC-ing properly.");
                 RegisterUserRequest rur = (RegisterUserRequest)obj;
 
                 if (DB.GetUserByUsername(rur.Username) == null)
