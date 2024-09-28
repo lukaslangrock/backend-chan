@@ -41,6 +41,10 @@ app.Map("/ws", async context =>
                             Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
                             await SendMessage(ws, outgoingMessage);
                         }
+                        else
+                        {
+                            Console.WriteLine("[WebSocket] client " + connections[ws] + " is hopefully happy with not getting a response.");
+                        }
                     }
                     else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
                     {
