@@ -146,7 +146,7 @@ public static class DB
          Message? message = GetMessageById(id++);
 
          if (message == null)
-            return id;
+            return id - 1;
       }
    }
 
