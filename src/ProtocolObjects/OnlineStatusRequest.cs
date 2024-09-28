@@ -1,6 +1,6 @@
 ﻿namespace backend.ProtocolObjects;
 
-public class OnlineStatusRequest : ObjectSerialization
+public class OnlineStatusRequest : Serializer
 {
     public static OnlineStatusRequest FromJson(string json)
     {

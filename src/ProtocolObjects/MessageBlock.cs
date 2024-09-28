@@ -2,17 +2,17 @@
 
 namespace backend.ProtocolObjects;
 
-public class MessageBlock (Message[] messageBlock) : ObjectSerialization
+public class MessageBlock (ProtocolMessage[] messageBlock) : Serializer
 {
-    public readonly Message[] messages = messageBlock;
+    public readonly ProtocolMessage[] messages = messageBlock;
 
     public static MessageBlock FromJson(string json)
     {
         var obj = JArray.Parse(json);
-        List<Message> messages = new List<Message>();
+        List<ProtocolMessage> messages = new List<ProtocolMessage>();
         
         for(int i = 0; i < obj.Count; i++)
-            messages.Add(Message.FromJson(obj[i].ToString()));
+            messages.Add(ProtocolMessage.FromJson(obj[i].ToString()));
         
         return new MessageBlock(messages.ToArray());
     }

@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class UserLogin(bool success, int clientId) : ObjectSerialization
+public class UserLogin(bool success, int clientId) : Serializer
 {
     public readonly bool Success = success;
     public readonly int ClientId = clientId;

@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class MessageSendResponse (bool success) : ObjectSerialization
+public class MessageSendResponse (bool success) : Serializer
 {
     public readonly bool Success = success;
 

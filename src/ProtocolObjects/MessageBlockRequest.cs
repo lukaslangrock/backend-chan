@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class MessageBlockRequest (int roomId, long startTs, long endTs) : ObjectSerialization
+public class MessageBlockRequest (int roomId, long startTs, long endTs) : Serializer
 {
     public readonly int RoomId = roomId;
     public readonly long StartTs = startTs;
