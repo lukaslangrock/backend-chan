@@ -4,4 +4,3 @@ using backend.database;
 DB.CreateDB();
 
 WebHandler.Run(args);
-
