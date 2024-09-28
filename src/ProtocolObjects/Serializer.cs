@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class ObjectSerialization
+public class Serializer
 {
     public string SerializeObject()
     {

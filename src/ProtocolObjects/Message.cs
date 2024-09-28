@@ -3,7 +3,7 @@ using Newtonsoft.Json.Linq;
 
 namespace backend.ProtocolObjects;
 
-public class Message(int userId, int roomId, string text) : ObjectSerialization
+public class Message(int userId, int roomId, string text) : Serializer
 {
     public readonly int UserId = userId;
     public readonly int RoomId = roomId;

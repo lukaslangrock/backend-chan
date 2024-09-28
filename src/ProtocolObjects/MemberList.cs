@@ -5,7 +5,7 @@ using Newtonsoft.Json.Linq;
 
 namespace backend.ProtocolObjects;
 
-public class MemberList(UserDescription[] userDescriptions) : ObjectSerialization
+public class MemberList(UserDescription[] userDescriptions) : Serializer
 {
     public readonly UserDescription[] UserDescriptions = userDescriptions;
 

@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class MessageBlock (Message[] messageBlock) : ObjectSerialization
+public class MessageBlock (Message[] messageBlock) : Serializer
 {
     public readonly Message[] messages = messageBlock;
 
