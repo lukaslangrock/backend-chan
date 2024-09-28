@@ -4,13 +4,13 @@ namespace backend.database;
 
 using System.Data.SQLite;
 
-public static class Database
+public static class DB
 {
    private static readonly string DbPath = "resources/database.db";
    private static readonly string DbCreationPath = "resources/createDB.sql";
    private static SQLiteConnection Connection;
    
-   static Database()
+   static DB()
    {
       Connection = CreateConnection();
    }
