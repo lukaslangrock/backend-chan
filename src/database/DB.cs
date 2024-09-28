@@ -40,7 +40,7 @@ public static class DB
    public static User? GetUserById(int id)
    {
       User? user = null;
-      ExecuteQuery("SELECT * FROM user WHERE id='" + id + "'", reader =>
+      ExecuteQuery("SELECT * FROM User WHERE id=" + id + ";", reader =>
       {
          user = new User(reader.GetInt32(0),
             reader.GetString(1),
