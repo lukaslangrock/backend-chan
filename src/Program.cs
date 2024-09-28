@@ -23,6 +23,7 @@ app.Map("/ws", async context =>
     if (context.WebSockets.IsWebSocketRequest)
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
+        // make sure random id is actually unique
         connections.Add(ws, Convert.ToInt32(random.NextInt64().ToString().Substring(0, 8))); // very secure, very mindful
         Console.WriteLine("[WebSocket] Accepted new WebSocket connection, identifying client as " + connections[ws]);
 
@@ -43,8 +44,16 @@ app.Map("/ws", async context =>
                             bool shouldBroadcast = o.Item2;
                             if (outgoingMessage is not null)
                             {
-                                Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
-                                await SendMessage(ws, outgoingMessage);
+                                if (shouldBroadcast)
+                                {
+                                    Console.WriteLine("[WebSocket] Response for " + connections[ws] + " is a broadcast to all clients: " + outgoingMessage);
+                                    await SendBroadcast(outgoingMessage);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
+                                    await SendMessage(ws, outgoingMessage);
+                                }
                             }
                             else
                             {
