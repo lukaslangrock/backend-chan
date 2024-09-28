@@ -23,7 +23,7 @@ app.Map("/ws", async context =>
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
         connections.Add(ws, DateTimeOffset.UtcNow.ToUnixTimeSeconds().GetHashCode()); // very secure, very mindful
-        Console.WriteLine("[WebSocket] Accepted new WebSocket connection. " + ws.ToString());
+        Console.WriteLine("[WebSocket] Accepted new WebSocket connection. ");
 
         await ReceiveMessage(ws,
             async (result, buffer) =>
@@ -41,7 +41,7 @@ app.Map("/ws", async context =>
                     else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
                     {
                         // websocket connection of client was lost
-                        Console.WriteLine("[WebSocket] Lost clientidentified as " + connections[ws] + ": " + ws.ToString());
+                        Console.WriteLine("[WebSocket] Lost clientidentified as " + connections[ws]);
                         connections.Remove(ws);
                     }
                 });
