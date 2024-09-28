@@ -48,8 +48,8 @@ app.Map("/ws", async context =>
     }
     else
     {
-        Console.WriteLine("[WebSocket] Endpoint '/ws' has received a non-WebSocket request, responding with 400 go fuck yourself.");
-        context.Response.StatusCode = (int)HttpStatusCode.BadRequest;
+        Console.WriteLine("[WebSocket] Endpoint '/ws' has received a non-WebSocket request, responding with 418 go fuck yourself.");
+        context.Response.StatusCode = 418;
     }
 });
 
