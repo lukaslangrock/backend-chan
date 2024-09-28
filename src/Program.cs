@@ -18,7 +18,7 @@ app.MapGet("/", () => "Connichiwa, backuendo-chan heru. Pleasu connectu on webu 
 app.UseWebSockets();
 app.Map("/ws", async context =>
 {
-    Console.WriteLine("[WebSocket] Trying to handle data incoming to endpoint '/ws'");
+    Console.WriteLine("[WebSocket] Trying to handle incoming data on endpoint '/ws'");
     if (context.WebSockets.IsWebSocketRequest)
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
@@ -36,7 +36,11 @@ app.Map("/ws", async context =>
 
                         // handle incoming message via JSON serialization
                         string? outgoingMessage = ProtocolHandler.OnReceive(incomingMessage, connections[ws]);
-                        if (outgoingMessage is not null) { await SendMessage(ws, outgoingMessage); }
+                        if (outgoingMessage is not null)
+                        {
+                            Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
+                            await SendMessage(ws, outgoingMessage);
+                        }
                     }
                     else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
                     {
@@ -59,6 +63,7 @@ async static Task ReceiveMessage(WebSocket ws, Action<WebSocketReceiveResult, by
     while (ws.State == WebSocketState.Open)
     {
         var result = await ws.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+        handleMessage(result, buffer);
     }
 }
 
