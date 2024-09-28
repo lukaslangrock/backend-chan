@@ -138,7 +138,7 @@ public static class DB
       {
          User? user = GetUserById(id++);
 
-         if (user != null)
+         if (user == null)
             return id;
       }
    }
