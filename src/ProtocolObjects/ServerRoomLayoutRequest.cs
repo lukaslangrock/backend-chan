@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class ServerRoomLayoutRequest : ObjectSerialization
+public class ServerRoomLayoutRequest
 {
     public static ServerRoomLayoutRequest FromJson(string json)
     {

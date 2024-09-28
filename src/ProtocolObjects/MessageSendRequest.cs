@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class MessageSendRequest(int clientId, int roomId, string text) : ObjectSerialization
+public class MessageSendRequest(int clientId, int roomId, string text)
 {
     public readonly int ClientId = clientId;
     public readonly int RoomId = roomId;

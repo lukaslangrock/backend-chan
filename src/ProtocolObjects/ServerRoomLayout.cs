@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class ServerRoomLayout(RoomDescription[] roomDescription) : ObjectSerialization
+public class ServerRoomLayout(RoomDescription[] roomDescription)
 {
     public readonly RoomDescription[] RoomDescriptions = roomDescription;
 
