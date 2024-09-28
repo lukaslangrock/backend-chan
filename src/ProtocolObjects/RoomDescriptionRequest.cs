@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class RoomDescriptionRequest (int roomId)
+public class RoomDescriptionRequest (int roomId) : ObjectSerialization
 {
     public readonly int RoomId = roomId;
 

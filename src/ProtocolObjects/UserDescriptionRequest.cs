@@ -2,7 +2,7 @@
 
 namespace backend.ProtocolObjects;
 
-public class UserDescriptionRequest(int userId)
+public class UserDescriptionRequest(int userId) : ObjectSerialization
 {
     public readonly int UserId = userId;
 
