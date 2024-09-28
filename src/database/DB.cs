@@ -100,7 +100,7 @@ public static class DB
    public static bool AddMessage(Message message)
    {
       return ExecuteNonQuery("INSERT INTO message (id, timestamp, roomid, senderid, text) VALUES ('"
-                      + message.Id + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "');") > 0;
+                      + message.Id + "', '" + message.Timestamp + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "');") > 0;
    }
 
    public static User? GetUserByUsername(string username)
