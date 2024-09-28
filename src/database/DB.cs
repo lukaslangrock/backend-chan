@@ -77,6 +77,38 @@ public static class DB
 
       return messages.ToArray();
    }
+   
+   public static Room[] GetRooms()
+   {
+      List<Room> rooms = new List<Room>();
+      ExecuteQuery(
+         "SELECT * FROM room WHERE true",
+         reader =>
+         {
+            rooms.Add(new Room(reader.GetInt32(0), reader.GetString(1)));
+         });
+
+      return rooms.ToArray();
+   }
+
+   public static bool AddMessage(Message message)
+   {
+      return ExecuteNonQuery("INSERT INTO message (id, timestamp, roomid, senderid, text) VALUES ("
+                      + message.Id + ", " + message.RoomId + ", " + message.SenderId + ", " + message.Text) > 0;
+   }
+
+   public static int GetFreeMessageId()
+   {
+      int id;
+      return ExecuteQuery(
+         "SELECT MIN(t1.id) + 1 AS first_unused_id FROM Message AS t1 LEFT JOIN Message AS t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL LIMIT 1;",
+         reader =>
+         {
+            id = reader.GetInt32(0);
+         });
+
+      return id;
+   }
 
    public static OnlineStatus? GetOnlineStatus(int userId)
    {
