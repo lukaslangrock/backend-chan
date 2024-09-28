@@ -16,7 +16,7 @@ public class LlmController
     {
         openAiService = new OpenAIService(new OpenAiOptions()
         {
-            ApiKey = File.ReadAllText("resources/OpenAI_APIKey.apikey")
+            ApiKey = File.ReadAllText("resources/OpenAI_APIKey.apikey").ReplaceLineEndings("")
         });
     }
 
