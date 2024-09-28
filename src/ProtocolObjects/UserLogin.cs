@@ -11,7 +11,7 @@ public class UserLogin(bool success, int clientId) : Serializer
     {
         var obj = JObject.Parse(json);
         return new UserLogin(
-            obj["success"]!.Value<bool>(),
-            obj["clientId"]!.Value<int>());
+            obj["Success"]!.Value<bool>(),
+            obj["ClientId"]!.Value<int>());
     }
 }
