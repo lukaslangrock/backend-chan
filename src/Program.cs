@@ -36,15 +36,20 @@ app.Map("/ws", async context =>
                         Console.WriteLine("[WebSocket] Received message from client identified as " + connections[ws] + ": " + incomingMessage);
 
                         // handle incoming message via JSON serialization
-                        string? outgoingMessage = ProtocolHandler.OnReceive(incomingMessage, connections[ws]);
-                        if (outgoingMessage is not null)
+                        List<(string?, bool)> outMsg = ProtocolHandler.OnReceive(incomingMessage, connections[ws]);
+                        foreach (var o in outMsg)
                         {
-                            Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
-                            await SendMessage(ws, outgoingMessage);
-                        }
-                        else
-                        {
-                            Console.WriteLine("[WebSocket] client " + connections[ws] + " is hopefully happy with not getting a response.");
+                            string? outgoingMessage = o.Item1;
+                            bool shouldBroadcast = o.Item2;
+                            if (outgoingMessage is not null)
+                            {
+                                Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
+                                await SendMessage(ws, outgoingMessage);
+                            }
+                            else
+                            {
+                                Console.WriteLine("[WebSocket] client " + connections[ws] + " is hopefully happy with not getting a response.");
+                            }
                         }
                     }
                     else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)

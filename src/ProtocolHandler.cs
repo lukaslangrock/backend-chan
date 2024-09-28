@@ -1,4 +1,5 @@
 using System.Data.Entity;
+using System.Numerics;
 using backend.database;
 using backend.ProtocolObjects;
 using Newtonsoft.Json;
@@ -21,7 +22,7 @@ public static class ProtocolHandler
 
     private static readonly Dictionary<int, int> clientUserMapping = new Dictionary<int, int>();
     
-    public static string? OnReceive(string json, int clientId)
+    public static List<(string?, bool)> OnReceive(string json, int clientId)
     {
         try
         {
@@ -43,10 +44,12 @@ public static class ProtocolHandler
         {
             Console.WriteLine($"Json parsing error: {e.Message}");
         }
-        return null;
+        List<(string?, bool)> ret = new List<(string?, bool)>();
+        ret.Add((null, false));
+        return ret;
     }
 
-    public static string? Handle(Serializer obj, int clientId)
+    public static List<(string?, bool)> Handle(Serializer obj, int clientId)
     {
         switch (obj.GetType().Name)
         {
@@ -58,10 +61,14 @@ public static class ProtocolHandler
                 {
                     DB.AddUser(new User(DB.GetFreeUserId(), rur.Username, rur.Password, rur.DisplayName, OnlineStatus.Offline));
                     
-                    return JsonConvert.SerializeObject(new RegisterUserResponse(true));
+                    List<(string?, bool)> o = new List<(string?, bool)>();
+                    o.Add((JsonConvert.SerializeObject(new RegisterUserResponse(true)), false));
+                    return o;
                 }
 
-                return JsonConvert.SerializeObject(new RegisterUserResponse(false));
+                List<(string?, bool)> o2 = new List<(string?, bool)>();
+                o2.Add((JsonConvert.SerializeObject(new RegisterUserResponse(false)), false));
+                return o2;
             }
             case "UserLoginRequest":
             {
@@ -75,12 +82,18 @@ public static class ProtocolHandler
                     if(user == null)
                         Console.WriteLine("User logged in with valid credentials, but is not found in database.");
                     clientUserMapping.Add(clientId, user.Id);
-                    return JsonConvert.SerializeObject(new UserLogin(true, clientId ));
+                    
+                    List<(string?, bool)> o3 = new List<(string?, bool)>();
+                    o3.Add((JsonConvert.SerializeObject(new UserLogin(true, clientId )), false));
+                    return o3;
                 }
                 else
                 {
                     Console.WriteLine("[ProtocolHandler] Invalid credentials");
-                    return JsonConvert.SerializeObject(new UserLogin(false, -1));
+                    
+                    List<(string?, bool)> o3 = new List<(string?, bool)>();
+                    o3.Add((JsonConvert.SerializeObject(new UserLogin(false, -1)), false));
+                    return o3;
                 }
             } break;
             case "UserDescriptionRequest":
@@ -88,7 +101,9 @@ public static class ProtocolHandler
                 UserDescriptionRequest udr = (UserDescriptionRequest)obj;
                 User? user = DB.GetUserById(udr.UserId);
                 
-                return JsonConvert.SerializeObject(new UserDescription(user.Id, user.DisplayName, user.OnlineStatus == OnlineStatus.Online ? UserOnlineStatus.Online : UserOnlineStatus.Offline));
+                List<(string?, bool)> o4 = new List<(string?, bool)>();
+                o4.Add((JsonConvert.SerializeObject(new UserDescription(user.Id, user.DisplayName, user.OnlineStatus == OnlineStatus.Online ? UserOnlineStatus.Online : UserOnlineStatus.Offline)), false));
+                return o4;
             } break;
             case "ServerRoomLayoutRequest":
             {
@@ -109,12 +124,17 @@ public static class ProtocolHandler
                     roomDescriptions.Add(new RoomDescription(room.DisplayName, room.Id, new MemberList(memberDescriptions.ToArray())));
                 }
                 
-                return JsonConvert.SerializeObject(new ServerRoomLayout(roomDescriptions.ToArray()));
+                List<(string?, bool)> o5 = new List<(string?, bool)>();
+                o5.Add((JsonConvert.SerializeObject(new ServerRoomLayout(roomDescriptions.ToArray())), false));
+                return o5;
             } break;
             case "RoomDescriptionRequest":
             {
                 RoomDescriptionRequest rdr = (RoomDescriptionRequest)obj;
-                return JsonConvert.SerializeObject(DB.GetRoomById(rdr.RoomId));
+                
+                List<(string?, bool)> o6 = new List<(string?, bool)>();
+                o6.Add((JsonConvert.SerializeObject(DB.GetRoomById(rdr.RoomId)), false));
+                return o6;
             } break;
             case "MessageBlockRequest":
             {
@@ -128,7 +148,9 @@ public static class ProtocolHandler
                     messageBlock[index++] = new ProtocolMessage(message.Id, message.Timestamp, message.Id, message.SenderId, message.Text);
                 }
 
-                return JsonConvert.SerializeObject(new MessageBlock(messageBlock));
+                List<(string?, bool)> o7 = new List<(string?, bool)>();
+                o7.Add((JsonConvert.SerializeObject(new MessageBlock(messageBlock)), false));
+                return o7;
             } break;
             case "MessageSendRequest":
             {
@@ -138,15 +160,32 @@ public static class ProtocolHandler
                 {
                     int currentMilliseconds = Environment.TickCount;
                     DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, msr.UserId, msr.Text));
-                    return JsonConvert.SerializeObject(new MessageSendResponse(true));
+                    
+                    List<(string?, bool)> o8 = new List<(string?, bool)>();
+                    o8.Add((JsonConvert.SerializeObject(new MessageSendResponse(true)), false));
 
+                    Message[] messages = DB.GetMessages(msr.RoomId, currentMilliseconds - 10000,
+                        currentMilliseconds + 10000);
+                    List<ProtocolMessage> protMessages = new List<ProtocolMessage>();
+
+                    foreach (var message in messages)
+                    {
+                        protMessages.Add(new ProtocolMessage(message.Id, message.Timestamp, message.RoomId, message.SenderId, message.Text));
+                    }
+                    
+                    o8.Add((JsonConvert.SerializeObject(new MessageBlock(protMessages.ToArray())), false));
+                    return o8;
                 }
 
-                return JsonConvert.SerializeObject(new MessageSendResponse(false)); 
+                List<(string?, bool)> o9 = new List<(string?, bool)>();
+                o9.Add((JsonConvert.SerializeObject(new MessageSendResponse(false)), false));
+                return o9;
             } break;
             default:
             {
-                return "Unknown object type";
+                List<(string?, bool)> o10 = new List<(string?, bool)>();
+                o10.Add(("Unknown object type", false));
+                return o10;
             }
         }
     }
