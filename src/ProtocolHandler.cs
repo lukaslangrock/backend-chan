@@ -170,7 +170,7 @@ public static class ProtocolHandler
                     protMessages.Add(new ProtocolMessage(message.Id, message.Timestamp, message.RoomId, message.SenderId, message.Text));
                 }
                 
-                o8.Add((JsonConvert.SerializeObject(new MessageBlock(protMessages.ToArray())), false));
+                o8.Add((JsonConvert.SerializeObject(new MessageBlock(protMessages.ToArray())), true));
                 return o8;
             } break;
             default:
