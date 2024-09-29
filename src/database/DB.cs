@@ -14,7 +14,20 @@ public static class DB
    {
       Connection = CreateConnection();
    }
-   
+
+   public static Message[] GetLastMessages(int roomId, int numMessages)
+   {
+      List<Message> messages = new List<Message>();
+      ExecuteQuery(
+         "SELECT * FROM (SELECT * FROM Message ORDER BY timestamp DESC LIMIT " + numMessages + ") AS LatestMessages ORDER BY timestamp ASC;",
+         reader =>
+         {
+            messages.Add(new Message(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3),
+               reader.GetString(4)));
+         });
+
+      return messages.ToArray();
+   }
    private static SQLiteConnection CreateConnection()
    {
       SQLiteConnection sqliteConn;
@@ -100,7 +113,7 @@ public static class DB
    public static bool AddMessage(Message message)
    {
       return ExecuteNonQuery("INSERT INTO message (id, timestamp, roomid, senderid, text) VALUES ('"
-                      + message.Id + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "');") > 0;
+                      + message.Id + "', '" + message.Timestamp + "', '" + message.RoomId + "', '" + message.SenderId + "', '" + message.Text + "');") > 0;
    }
 
    public static User? GetUserByUsername(string username)
@@ -121,16 +134,33 @@ public static class DB
       return user;
    }
 
+   public static Message? GetMessageById(int id)
+   {
+      Message? message = null;
+      
+      ExecuteQuery("SELECT * FROM Message WHERE id='" + id + "'", reader =>
+      {
+         message = new Message(
+            reader.GetInt32(0), 
+            reader.GetInt32(1), 
+            reader.GetInt32(2),
+            reader.GetInt32(3),
+            reader.GetString(4));
+      });
+
+      return message;
+   }
+
    public static int GetFreeMessageId()
    {
-      int id = -1;
-      ExecuteQuery(
-         "SELECT MIN(t1.id) + 1 AS first_unused_id FROM Message AS t1 LEFT JOIN Message AS t2 ON t1.id + 1 = t2.id WHERE t2.id IS NULL LIMIT 1;",
-         reader =>
-         {
-            id = reader.GetInt32(0);
-         });
-      return id;
+      int id = 0;
+      while (true)
+      {
+         Message? message = GetMessageById(id++);
+
+         if (message == null)
+            return id - 1;
+      }
    }
 
    public static int GetFreeUserId()
@@ -141,7 +171,7 @@ public static class DB
          User? user = GetUserById(id++);
 
          if (user == null)
-            return id;
+            return id - 1;
       }
    }
 

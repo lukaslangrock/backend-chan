@@ -12,8 +12,8 @@ public class MessageBlockRequest (int roomId, long startTs, long endTs) : Serial
     {
         var obj = JObject.Parse(json);
         return new MessageBlockRequest(
-            obj["roomId"].Value<int>(),
-            obj["startTs"].Value<long>(),
-            obj["endTs"].Value<long>());
+            obj["RoomId"].Value<int>(),
+            obj["StartTs"].Value<long>(),
+            obj["EndTs"].Value<long>());
     }
 }

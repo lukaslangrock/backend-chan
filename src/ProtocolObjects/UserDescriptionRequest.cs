@@ -9,6 +9,6 @@ public class UserDescriptionRequest(int userId) : Serializer
     public static UserDescriptionRequest FromJson(string json)
     {
         var obj = JObject.Parse(json);
-        return new UserDescriptionRequest(obj["userId"]!.Value<int>());
+        return new UserDescriptionRequest(obj["UserId"]!.Value<int>());
     }
 }

@@ -12,6 +12,7 @@ DB.CreateDB();
 var builder = WebApplication.CreateBuilder(args);
 var app = builder.Build();
 var connections = new Dictionary<WebSocket, int>();
+Random random = new Random();
 
 app.MapGet("/", () => "Connichiwa, backuendo-chan heru. Pleasu connectu on webu sokketsu to interufacu.");
 
@@ -22,7 +23,8 @@ app.Map("/ws", async context =>
     if (context.WebSockets.IsWebSocketRequest)
     {
         WebSocket ws = await context.WebSockets.AcceptWebSocketAsync();
-        connections.Add(ws, (int)DateTimeOffset.UtcNow.ToUnixTimeMilliseconds()); // very secure, very mindful
+        // make sure random id is actually unique
+        connections.Add(ws, Convert.ToInt32(random.NextInt64().ToString().Substring(0, 8))); // very secure, very mindful
         Console.WriteLine("[WebSocket] Accepted new WebSocket connection, identifying client as " + connections[ws]);
 
         await ReceiveMessage(ws,
@@ -35,15 +37,28 @@ app.Map("/ws", async context =>
                         Console.WriteLine("[WebSocket] Received message from client identified as " + connections[ws] + ": " + incomingMessage);
 
                         // handle incoming message via JSON serialization
-                        string? outgoingMessage = ProtocolHandler.OnReceive(incomingMessage, connections[ws]);
-                        if (outgoingMessage is not null)
+                        List<(string?, bool)> outMsg = ProtocolHandler.OnReceive(incomingMessage, connections[ws]);
+                        foreach (var o in outMsg)
                         {
-                            Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
-                            await SendMessage(ws, outgoingMessage);
-                        }
-                        else
-                        {
-                            Console.WriteLine("[WebSocket] client " + connections[ws] + " is hopefully happy with not getting a response.");
+                            string? outgoingMessage = o.Item1;
+                            bool shouldBroadcast = o.Item2;
+                            if (outgoingMessage is not null)
+                            {
+                                if (shouldBroadcast)
+                                {
+                                    Console.WriteLine("[WebSocket] Response for " + connections[ws] + " is a broadcast to all clients: " + outgoingMessage);
+                                    await SendBroadcast(outgoingMessage);
+                                }
+                                else
+                                {
+                                    Console.WriteLine("[WebSocket] Responding to client " + connections[ws] + ": " + outgoingMessage);
+                                    await SendMessage(ws, outgoingMessage);
+                                }
+                            }
+                            else
+                            {
+                                Console.WriteLine("[WebSocket] client " + connections[ws] + " is hopefully happy with not getting a response.");
+                            }
                         }
                     }
                     else if (result.MessageType == WebSocketMessageType.Close || ws.State == WebSocketState.Aborted)
@@ -75,6 +90,16 @@ async static Task SendMessage(WebSocket ws, string message)
 {
     var bytes = Encoding.UTF8.GetBytes(message);
     if (ws.State == WebSocketState.Open)
+    {
+        var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
+        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+    }
+}
+
+async Task SendBroadcast(string message)
+{
+    var bytes = Encoding.UTF8.GetBytes(message);
+    foreach (WebSocket ws in connections.Keys.ToArray())
     {
         var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
         await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
