@@ -156,7 +156,7 @@ public static class ProtocolHandler
             {
                 MessageSendRequest msr = (MessageSendRequest)obj;
 
-                int currentMilliseconds = Environment.TickCount;
+                int currentMilliseconds = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
                 DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, clientUserMapping[msr.ClientId], msr.Text));
                 
                 List<(string?, bool)> o8 = new List<(string?, bool)>();
