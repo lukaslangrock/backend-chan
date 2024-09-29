@@ -2,7 +2,7 @@ using Newtonsoft.Json.Linq;
 
 namespace backend.ProtocolObjects;
 
-public class RegisterUserResponse(bool success)
+public class RegisterUserResponse(bool success) : Serializer
 {
     public readonly bool Success = success;
 
