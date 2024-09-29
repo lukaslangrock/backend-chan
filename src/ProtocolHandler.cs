@@ -157,7 +157,27 @@ public static class ProtocolHandler
                 MessageSendRequest msr = (MessageSendRequest)obj;
 
                 int currentMilliseconds = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
-                DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, clientUserMapping[msr.ClientId], msr.Text));
+
+                string text = msr.Text;
+
+                if (msr.IsShakespeare)
+                {
+                    var task = LlmController.TranslateToShakespeare(text);
+                    while (!task.IsCompleted)
+                    {
+                        
+                    }
+
+                    text = task.Result;
+                }
+                
+                DB.AddMessage(
+                    new Message(
+                        DB.GetFreeMessageId(), 
+                        currentMilliseconds, 
+                        msr.RoomId, 
+                        clientUserMapping[msr.ClientId], 
+                        text));
                 
                 List<(string?, bool)> o8 = new List<(string?, bool)>();
                 o8.Add((JsonConvert.SerializeObject(new MessageSendResponse(true)), false));
