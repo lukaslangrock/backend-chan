@@ -173,10 +173,11 @@ public static class ProtocolHandler
                         {
 
                         }
-
-                        text = task.Result;
+                        
+                        if(task.Result != null)
+                            text = task.Result;
                     }
-
+                    
                     text = text.Replace("\"", "");
                     text = text.Replace("'", "");
 
