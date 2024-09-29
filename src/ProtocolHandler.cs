@@ -136,8 +136,8 @@ public static class ProtocolHandler
 
                 if (clientUserMapping[msr.ClientId] == msr.UserId)
                 {
-                    int currentMilliseconds = Environment.TickCount;
-                    DB.AddMessage(new Message(DB.GetFreeMessageId(), currentMilliseconds, msr.RoomId, msr.UserId, msr.Text));
+                    int currentTime = (int)DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                    DB.AddMessage(new Message(DB.GetFreeMessageId(), currentTime, msr.RoomId, msr.UserId, msr.Text));
                     return JsonConvert.SerializeObject(new MessageSendResponse(true));
 
                 }
