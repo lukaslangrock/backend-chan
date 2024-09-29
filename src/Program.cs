@@ -101,8 +101,16 @@ async Task SendBroadcast(string message)
     var bytes = Encoding.UTF8.GetBytes(message);
     foreach (WebSocket ws in connections.Keys.ToArray())
     {
-        var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
-        await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+        try
+        {
+            var arraySegment = new ArraySegment<byte>(bytes, 0, bytes.Length);
+            await ws.SendAsync(arraySegment, WebSocketMessageType.Text, true, CancellationToken.None);
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine("[WebSocket] Error sending broadcasted message to a client: " + ex.ToString());
+        }
+
     }
 }
 
