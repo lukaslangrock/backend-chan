@@ -59,7 +59,7 @@ public static class DB
             reader.GetString(1),
             reader.GetString(2),
             reader.GetString(3),
-            reader.GetInt32(4) == 1 ? OnlineStatus.Online : OnlineStatus.Offline);
+            reader.GetString(4) == "Online" ? OnlineStatus.Online : OnlineStatus.Offline);
       });
       
       return user;
