@@ -170,6 +170,9 @@ public static class ProtocolHandler
 
                     text = task.Result;
                 }
+
+                text = text.Replace("\"", "");
+                text = text.Replace("'", "");
                 
                 DB.AddMessage(
                     new Message(
