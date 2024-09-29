@@ -14,7 +14,20 @@ public static class DB
    {
       Connection = CreateConnection();
    }
-   
+
+   public static Message[] GetLastMessages(int roomId, int numMessages)
+   {
+      List<Message> messages = new List<Message>();
+      ExecuteQuery(
+         "SELECT * FROM (SELECT * FROM Message ORDER BY timestamp DESC LIMIT " + numMessages + ") AS LatestMessages ORDER BY timestamp ASC;",
+         reader =>
+         {
+            messages.Add(new Message(reader.GetInt32(0), reader.GetInt32(1), reader.GetInt32(2), reader.GetInt32(3),
+               reader.GetString(4)));
+         });
+
+      return messages.ToArray();
+   }
    private static SQLiteConnection CreateConnection()
    {
       SQLiteConnection sqliteConn;
@@ -158,7 +171,7 @@ public static class DB
          User? user = GetUserById(id++);
 
          if (user == null)
-            return id;
+            return id - 1;
       }
    }
 

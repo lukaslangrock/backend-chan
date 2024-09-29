@@ -162,8 +162,7 @@ public static class ProtocolHandler
                 List<(string?, bool)> o8 = new List<(string?, bool)>();
                 o8.Add((JsonConvert.SerializeObject(new MessageSendResponse(true)), false));
 
-                Message[] messages = DB.GetMessages(msr.RoomId, currentMilliseconds - 10000,
-                    currentMilliseconds + 10000);
+                Message[] messages = DB.GetLastMessages(msr.RoomId, 20);
                 List<ProtocolMessage> protMessages = new List<ProtocolMessage>();
 
                 foreach (var message in messages)
